@@ -25,7 +25,7 @@ spec:
     - server: https://kubernetes.default.svc
       namespace: kube-system     # cert-manager leader-election Role/RoleBinding
     - server: https://kubernetes.default.svc
-      namespace: sk8l
+      namespace: 'sk8l*'
 
   # cert-manager/trust-manager ship CRDs, ClusterRoles and webhook configurations,
   # and the PKI uses a ClusterIssuer and a (cluster-scoped) Bundle.

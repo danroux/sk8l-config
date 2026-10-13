@@ -1,0 +1,44 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sk8l-ca-root-cert
+spec:
+  isCA: true
+  commonName: sk8l-ca
+  secretName: sk8l-ca-root-cert-secret
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  issuerRef:
+    name: sk8l-selfsigned-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sk8l-server-cert
+spec:
+  secretName: sk8l-server-cert-secret
+  commonName: sk8l
+  duration: 2160h      # 90d
+  renewBefore: 360h    # 15d
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+    rotationPolicy: Always
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - sk8l
+    - sk8l-ui
+    - localhost
+  ipAddresses:
+    - 127.0.0.1
+  issuerRef:
+    name: sk8l-selfsigned-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
