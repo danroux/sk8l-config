@@ -1,0 +1,21 @@
+# Merge-patch for the argocd-cm ConfigMap. Apply with:
+#
+#   kubectl -n argocd patch configmap argocd-cm --type merge --patch-file bootstrap/argocd-cm-health-patch.yaml
+#
+# Do NOT `kubectl apply` this file: it would replace the whole ConfigMap.
+#
+# Why: ArgoCD stopped assessing Application health in v1.8. Without this check,
+# sync waves between the child Applications don't wait for each other, and
+# sk8l starts before cert-manager has created its TLS secrets.
+data:
+  resource.customizations.health.argoproj.io_Application: |
+    hs = {}
+    hs.status = "Progressing"
+    hs.message = ""
+    if obj.status ~= nil and obj.status.health ~= nil then
+      hs.status = obj.status.health.status
+      if obj.status.health.message ~= nil then
+        hs.message = obj.status.health.message
+      end
+    end
+    return hs

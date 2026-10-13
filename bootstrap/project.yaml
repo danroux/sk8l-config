@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: sk8l
+  namespace: argocd
+  # Prevents deleting the project while Applications still reference it.
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: sk8l and its dependencies (cert-manager, trust-manager, PKI)
+
+  # Only these sources may be deployed by Applications in this project.
+  sourceRepos:
+    - https://github.com/danroux/sk8l-config.git
+    - https://charts.jetstack.io
+    - https://sk8l.io/charts
+    - ghcr.io/danroux/sk8l
+
+  # Only these namespaces may be deployed to.
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: argocd          # child Application objects created by the root app
+    - server: https://kubernetes.default.svc
+      namespace: cert-manager    # cert-manager + trust-manager
+    - server: https://kubernetes.default.svc
+      namespace: kube-system     # cert-manager leader-election Role/RoleBinding
+    - server: https://kubernetes.default.svc
+      namespace: sk8l
+
+  # cert-manager/trust-manager ship CRDs, ClusterRoles and webhook configurations,
+  # and the PKI uses a ClusterIssuer and a (cluster-scoped) Bundle.
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"

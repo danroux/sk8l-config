@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sk8l-pki
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: sk8l
+  source:
+    repoURL: https://github.com/danroux/sk8l-config.git
+    targetRevision: master
+    path: manifests/sk8l-pki
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sk8l
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true                    # owns the sk8l namespace (chart: namespace.create=false)
+      - SkipDryRunOnMissingResource=true        # cert-manager/trust-manager CRDs may not be registered yet on first sync

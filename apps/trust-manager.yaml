@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trust-manager
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: sk8l
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: trust-manager
+    # The Makefile installs whatever is latest; v0.25.0 is what CI currently resolves.
+    targetRevision: v0.25.0
+    helm:
+      valuesObject:
+        app:
+          trust:
+            namespace: sk8l      # trust-manager reads Bundle source secrets from here
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

@@ -1,0 +1,39 @@
+# Values for the sk8l chart (https://sk8l.io/charts), applied by apps/sk8l.yaml.
+# Chart defaults: https://github.com/danroux/sk8l-api/blob/main/charts/sk8l/values.yaml
+
+namespace:
+  create: false            # owned by apps/sk8l-pki.yaml (CreateNamespace=true)
+  name: sk8l
+
+# Image tags are bumped by the sk8l-api / sk8l-ui release workflows.
+#
+# To run an unreleased build, point at ghcr and use an immutable tag (never `pre`:
+# ArgoCD only redeploys when this file changes):
+#   sk8lApi:
+#     image: ghcr.io/danroux/sk8l-api
+#     imageTag: pre-<commit-sha>     # built on every push to sk8l-api main
+#   sk8lUi:
+#     image: ghcr.io/danroux/sk8l-ui
+#     imageTag: pre-<commit-sha>     # use pre-* (nginx/production build), not dev-*
+sk8lApi:
+  image: danroux/sk8l-api
+  imageTag: "v0.19.0"
+sk8lUi:
+  image: danroux/sk8l-ui
+  imageTag: "v0.18.0"
+
+# Port-forward only for now. Chart defaults are LoadBalancer.
+#   kubectl -n sk8l port-forward svc/sk8l-ui 8001:8001 9080:9080
+service:
+  type: ClusterIP
+uiService:
+  type: ClusterIP
+
+configMaps:
+  ui:
+    # URL the browser uses to reach envoy. Must match a SAN on sk8l-server-cert.
+    vite_sk8l_api_url: "https://localhost:9080"
+
+# networkPolicy is enabled by default. If your CNI enforces NetworkPolicies and
+# sk8l-api can't reach the Kubernetes API, set networkPolicy.apiserverPolicy
+# CIDRs to your API server address (kubectl get endpoints kubernetes -n default).
