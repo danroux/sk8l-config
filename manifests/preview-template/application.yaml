@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: APP_NAME_PLACEHOLDER
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: sk8l
+  sources:
+    - repoURL: ghcr.io/danroux/sk8l
+      chart: sk8l
+      targetRevision: CHART_VERSION_PLACEHOLDER
+      helm:
+        releaseName: sk8l
+        valuesObject:
+          namespace:
+            create: false
+            name: NAMESPACE_PLACEHOLDER
+          serviceAccount:
+            create: true
+            metadata:
+              name: sk8l
+              namespace: NAMESPACE_PLACEHOLDER
+          sk8lUi:
+            image: UI_IMAGE_PLACEHOLDER
+            imageTag: "UI_TAG_PLACEHOLDER"
+          sk8lApi:
+            image: API_IMAGE_PLACEHOLDER
+            imageTag: "API_TAG_PLACEHOLDER"
+          service:
+            type: ClusterIP
+          uiService:
+            type: ClusterIP
+          configMaps:
+            ui:
+              vite_sk8l_api_url: "https://localhost:9080"
+    - repoURL: https://github.com/danroux/sk8l-config.git
+      targetRevision: master
+      path: manifests/preview-pki
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: NAMESPACE_PLACEHOLDER
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true
+  ignoreDifferences:
+    - kind: ServiceAccount
+      name: sk8l
+      jsonPointers:
+        - /create
+        - /secrets
+        - /imagePullSecrets
