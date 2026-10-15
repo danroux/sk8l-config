@@ -27,9 +27,11 @@ spec:
           sk8lUi:
             image: UI_IMAGE_PLACEHOLDER
             imageTag: "UI_TAG_PLACEHOLDER"
+            imagePullPolicy: Always
           sk8lApi:
             image: API_IMAGE_PLACEHOLDER
             imageTag: "API_TAG_PLACEHOLDER"
+            imagePullPolicy: Always
           service:
             type: ClusterIP
           uiService:

@@ -27,9 +27,11 @@ spec:
           sk8lUi:
             image: ghcr.io/danroux/sk8l-ui
             imageTag: "pre-385"
+            imagePullPolicy: Always
           sk8lApi:
             image: danroux/sk8l-api
             imageTag: "v0.19.0"
+            imagePullPolicy: Always
           service:
             type: ClusterIP
           uiService:
