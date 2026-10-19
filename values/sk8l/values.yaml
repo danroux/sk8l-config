@@ -17,10 +17,10 @@ namespace:
 #     imageTag: pre-<commit-sha>     # use pre-* (nginx/production build), not dev-*
 sk8lApi:
   image: danroux/sk8l-api
-  imageTag: "v0.19.0"
+  imageTag: "v0.20.0"
 sk8lUi:
   image: danroux/sk8l-ui
-  imageTag: "v0.18.0"
+  imageTag: "v0.19.0"
 
 # Port-forward only for now. Chart defaults are LoadBalancer.
 #   kubectl -n sk8l port-forward svc/sk8l-ui 8001:8001 9080:9080
