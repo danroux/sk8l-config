@@ -1,0 +1,45 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "timezone": "Europe/Madrid",
+  "argocd": {
+    "fileMatch": [
+      "^apps/[^/]+\\.ya?ml$"
+    ]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update Docker image tags in values/sk8l/values.yaml",
+      "fileMatch": [
+        "^values/.+\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "image:\\s*(?<depName>[^\\s]+)\\s+imageTag:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Group sk8l core stack updates into a single PR with auto-merge",
+      "matchPackageNames": [
+        "danroux/sk8l-api",
+        "danroux/sk8l-ui",
+        "sk8l"
+      ],
+      "groupName": "sk8l core release",
+      "automerge": true
+    },
+    {
+      "description": "Ignore preview environments and templates to avoid modifying ephemeral PRs",
+      "matchPaths": [
+        "apps/previews/**",
+        "manifests/preview-template/**"
+      ],
+      "enabled": false
+    }
+  ]
+}
