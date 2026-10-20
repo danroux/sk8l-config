@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sk8l-api-pr-320
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: sk8l
+  sources:
+    - repoURL: ghcr.io/danroux/sk8l
+      chart: sk8l
+      targetRevision: 0.24.0
+      helm:
+        releaseName: sk8l
+        valuesObject:
+          namespace:
+            create: false
+            name: sk8l-api-pr-320
+          serviceAccount:
+            create: true
+            metadata:
+              name: sk8l
+              namespace: sk8l-api-pr-320
+          sk8lUi:
+            image: danroux/sk8l-ui
+            imageTag: "v0.19.0"
+            imagePullPolicy: Always
+          sk8lApi:
+            image: ghcr.io/danroux/sk8l-api
+            imageTag: "dev-320"
+            imagePullPolicy: Always
+          service:
+            type: ClusterIP
+          uiService:
+            type: ClusterIP
+          configMaps:
+            ui:
+              vite_sk8l_api_url: "https://localhost:9080"
+    - repoURL: https://github.com/danroux/sk8l-config.git
+      targetRevision: master
+      path: manifests/preview-pki
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sk8l-api-pr-320
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true
+  ignoreDifferences:
+    - kind: ServiceAccount
+      name: sk8l
+      jsonPointers:
+        - /create
+        - /secrets
+        - /imagePullSecrets
