@@ -14,7 +14,7 @@ spec:
   sources:
     - repoURL: ghcr.io/danroux/sk8l
       chart: sk8l
-      targetRevision: 0.24.0
+      targetRevision: 0.25.0
       helm:
         releaseName: sk8l
         valueFiles:
