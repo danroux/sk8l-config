@@ -28,7 +28,9 @@
       "matchPackageNames": [
         "danroux/sk8l-api",
         "danroux/sk8l-ui",
-        "sk8l"
+        "sk8l",
+        "ghcr.io/danroux/sk8l",
+        "ghcr.io/danroux/sk8l/sk8l"
       ],
       "groupName": "sk8l core release",
       "automerge": true
