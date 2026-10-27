@@ -20,7 +20,7 @@ sk8lApi:
   imageTag: "v0.22.0"
 sk8lUi:
   image: danroux/sk8l-ui
-  imageTag: "v0.19.0"
+  imageTag: "v0.20.0"
 
 # Port-forward only for now. Chart defaults are LoadBalancer.
 #   kubectl -n sk8l port-forward svc/sk8l-ui 8001:8001 9080:9080
