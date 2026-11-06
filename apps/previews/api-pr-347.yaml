@@ -25,8 +25,8 @@ spec:
               name: sk8l
               namespace: sk8l-api-pr-347
           sk8lUi:
-            image: danroux/sk8l-ui
-            imageTag: "v0.20.0"
+            image: ghcr.io/danroux/sk8l-ui
+            imageTag: pre-453
             imagePullPolicy: Always
           sk8lApi:
             image: ghcr.io/danroux/sk8l-api
@@ -38,7 +38,7 @@ spec:
             type: ClusterIP
           configMaps:
             ui:
-              vite_sk8l_api_url: "https://localhost:9080"
+              vite_sk8l_api_url: "https://localhost:8590"
     - repoURL: https://github.com/danroux/sk8l-config.git
       targetRevision: master
       path: manifests/preview-pki
