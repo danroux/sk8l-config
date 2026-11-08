@@ -1,4 +1,4 @@
-# Secret names are fixed: the sk8l chart hardcodes them in its `tls-certs` volume.
+# Secret names match tls.secretName and tls.caSecretName in values/sk8l/values.yaml.
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -37,19 +37,13 @@ spec:
   usages:
     - server auth
     - client auth
-  # envoy reaches the API at "sk8l" (chart ConfigMap); with port-forward the
-  # browser reaches envoy/nginx at localhost. If you expose sk8l through an
-  # ingress/LoadBalancer later, add that hostname here and to
-  # configMaps.ui.vite_sk8l_api_url in values/sk8l/values.yaml.
+  # Clients (browser via port-forward, Prometheus, gRPC clients) reach sk8l on port 8590.
+  # If you expose sk8l through an Ingress/LoadBalancer later, add that hostname here.
   dnsNames:
     - sk8l
     - sk8l.sk8l
     - sk8l.sk8l.svc
     - sk8l.sk8l.svc.cluster.local
-    - sk8l-ui
-    - sk8l-ui.sk8l
-    - sk8l-ui.sk8l.svc
-    - sk8l-ui.sk8l.svc.cluster.local
     - localhost
   ipAddresses:
     - 127.0.0.1

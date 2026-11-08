@@ -27,7 +27,6 @@
       "description": "Group sk8l core stack updates into a single PR with auto-merge",
       "matchPackageNames": [
         "danroux/sk8l-api",
-        "danroux/sk8l-ui",
         "sk8l",
         "ghcr.io/danroux/sk8l",
         "ghcr.io/danroux/sk8l/sk8l"

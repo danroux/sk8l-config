@@ -42,7 +42,7 @@ kubectl apply -f bootstrap/root.yaml
 ## Access
 
 ```sh
-kubectl -n sk8l port-forward svc/sk8l-ui 8001:8001 9080:9080
+kubectl -n sk8l port-forward svc/sk8l 8001:8590
 # https://localhost:8001
 ```
 

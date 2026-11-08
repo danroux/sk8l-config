@@ -15,17 +15,13 @@ on:
         description: 'Custom tag for sk8l-api (only used if mode = custom)'
         type: string
         required: false
-      ui_tag:
-        description: 'Custom tag for sk8l-ui (only used if mode = custom)'
-        type: string
-        required: false
 
 permissions:
   contents: write
 
 jobs:
   switch-images:
-    name: Switch sk8l Images
+    name: Switch sk8l Image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sk8l-config
@@ -53,7 +49,7 @@ jobs:
       - name: Add local bin to PATH
         run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Determine image targets
+      - name: Determine image target
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -62,53 +58,33 @@ jobs:
 
           if [ "${MODE}" = "pre-release (GHCR latest main)" ]; then
             API_SHA=$(gh api repos/danroux/sk8l-api/commits/main --jq '.sha')
-            UI_SHA=$(gh api repos/danroux/sk8l-ui/commits/main --jq '.sha')
             API_IMG="ghcr.io/danroux/sk8l-api"
             API_TAG="pre-${API_SHA}"
-            UI_IMG="ghcr.io/danroux/sk8l-ui"
-            UI_TAG="pre-${UI_SHA}"
 
           elif [ "${MODE}" = "latest-release (Docker Hub stable)" ]; then
             API_IMG="danroux/sk8l-api"
             API_TAG=$(gh api repos/danroux/sk8l-api/releases/latest --jq '.tag_name')
-            UI_IMG="danroux/sk8l-ui"
-            UI_TAG=$(gh api repos/danroux/sk8l-ui/releases/latest --jq '.tag_name')
 
           elif [ "${MODE}" = "custom" ]; then
             API_TAG="${{ github.event.inputs.api_tag }}"
-            UI_TAG="${{ github.event.inputs.ui_tag }}"
 
             if [[ "${API_TAG}" == pre-* ]]; then
               API_IMG="ghcr.io/danroux/sk8l-api"
             else
               API_IMG="danroux/sk8l-api"
             fi
-
-            if [[ "${UI_TAG}" == pre-* ]]; then
-              UI_IMG="ghcr.io/danroux/sk8l-ui"
-            else
-              UI_IMG="danroux/sk8l-ui"
-            fi
           fi
 
           echo "Selected API Image: ${API_IMG}:${API_TAG}"
-          echo "Selected UI Image:  ${UI_IMG}:${UI_TAG}"
 
           echo "API_IMG=${API_IMG}" >> "$GITHUB_ENV"
           echo "API_TAG=${API_TAG}" >> "$GITHUB_ENV"
-          echo "UI_IMG=${UI_IMG}" >> "$GITHUB_ENV"
-          echo "UI_TAG=${UI_TAG}" >> "$GITHUB_ENV"
 
       - name: Update values/sk8l/values.yaml
         run: |
           if [ -n "${API_TAG}" ]; then
             yq -i ".sk8lApi.image = \"${API_IMG}\"" values/sk8l/values.yaml
             yq -i ".sk8lApi.imageTag = \"${API_TAG}\"" values/sk8l/values.yaml
-          fi
-
-          if [ -n "${UI_TAG}" ]; then
-            yq -i ".sk8lUi.image = \"${UI_IMG}\"" values/sk8l/values.yaml
-            yq -i ".sk8lUi.imageTag = \"${UI_TAG}\"" values/sk8l/values.yaml
           fi
 
           echo "--- Updated values/sk8l/values.yaml diff ---"
@@ -125,9 +101,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add values/sk8l/values.yaml
 
-          COMMIT_MSG="chore(deploy): switch images to ${{ github.event.inputs.mode }}"
+          COMMIT_MSG="deploy: switch image to ${{ github.event.inputs.mode }}"
           [ -n "${API_TAG}" ] && COMMIT_MSG="${COMMIT_MSG} [api: ${API_TAG}]"
-          [ -n "${UI_TAG}" ] && COMMIT_MSG="${COMMIT_MSG} [ui: ${UI_TAG}]"
 
           git commit -m "${COMMIT_MSG}"
           git push origin master

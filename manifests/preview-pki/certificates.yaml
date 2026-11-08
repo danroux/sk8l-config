@@ -34,7 +34,6 @@ spec:
     - client auth
   dnsNames:
     - sk8l
-    - sk8l-ui
     - localhost
   ipAddresses:
     - 127.0.0.1
