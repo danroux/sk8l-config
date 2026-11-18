@@ -26,7 +26,7 @@ spec:
               namespace: sk8l-ui-pr-472
           sk8lApi:
             image: ghcr.io/danroux/sk8l-api
-            imageTag: "ui-pr-472-2"
+            imageTag: "ui-pr-472-3"
             imagePullPolicy: Always
           tls:
             enabled: true
