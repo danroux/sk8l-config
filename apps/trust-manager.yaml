@@ -13,7 +13,7 @@ spec:
     repoURL: https://charts.jetstack.io
     chart: trust-manager
     # The Makefile installs whatever is latest; v0.25.0 is what CI currently resolves.
-    targetRevision: v0.25.0
+    targetRevision: v0.26.0
     helm:
       valuesObject:
         app:
