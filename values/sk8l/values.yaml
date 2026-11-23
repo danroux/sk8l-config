@@ -14,7 +14,7 @@ namespace:
 #     imageTag: pre-<commit-sha>     # built on every push to sk8l-api main
 sk8lApi:
   image: danroux/sk8l-api
-  imageTag: "v0.25.0"
+  imageTag: "v0.26.0"
 
 tls:
   enabled: true
